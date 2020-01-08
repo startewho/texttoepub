@@ -1,34 +1,20 @@
-use std::fmt;
+
 use std::error::Error;
 use std::path::{Path};
 use std::fs::File;
 use std::io::prelude::*;
 use regex::Regex; 
 
-#[derive(Default)]
-struct Chapter<'a> {
- name:&'a str,
- contnet:&'a str,
-}
 
-impl fmt::Display for Chapter<'_> {
-    // This trait requires `fmt` with this exact signature.
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        // Write strictly the first element into the supplied output
-        // stream: `f`. Returns `fmt::Result` which indicates whether the
-        // operation succeeded or failed. Note that `write!` uses syntax which
-        // is very similar to `println!`.
-        write!(f, "{} {}", self.name,self.contnet)
-    }
-}
-
-fn split_keep<'a>(r: &Regex, text: &'a str) -> Vec<Chapter<'a>> {
+mod meta;
+mod epub;
+fn split_keep<'a>(r: &Regex, text: &'a str) -> Vec<meta::Chapter<'a>> {
     let mut result = Vec::new();
     for c in r.captures_iter(text){
-        result.push(Chapter{
-            name: c.get(0).map_or("", |m| m.as_str()),
-            contnet:c.get(0).map_or("", |m| m.as_str()),
-    });
+        let name=c.get(0).map_or("", |m| m.as_str());
+        let content=c.get(0).map_or("", |m| m.as_str());
+        let chapter=meta::Chapter::new(name, content);
+        result.push(chapter);
     }
     result
 }
@@ -47,6 +33,8 @@ fn main() {
     for split in splits {
         println!("\"{}\"", split);
     }
+    let chapter =meta::Chapter::new("f", "f");
+       epub::gen_epub(chapter);
     }
     
 }
