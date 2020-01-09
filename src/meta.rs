@@ -4,8 +4,8 @@ use std::fmt;
 pub struct Chapter<'a> {
     name: &'a str,
     content: &'a str,
-    start:usize,
-    end:usize,
+    start: usize,
+    end: usize,
 }
 
 pub struct Meta {
@@ -21,12 +21,12 @@ pub struct Book<'a> {
 }
 
 impl Chapter<'_> {
-    pub fn new<'a>(n: &'a str, c: &'a str,s:usize,e:usize) -> Chapter<'a> {
+    pub fn new<'a>(n: &'a str, c: &'a str, s: usize, e: usize) -> Chapter<'a> {
         Chapter {
             name: n,
             content: c,
-            start:s,
-            end:e,
+            start: s,
+            end: e,
         }
     }
     pub fn get_name<'a>(&'a self) -> &'a str {
@@ -44,11 +44,11 @@ impl Chapter<'_> {
 }
 
 impl Book<'_> {
-    pub fn new<'a>(m: Vec<Meta>, c: Vec<Chapter<'a>>,s:&'a str) -> Book<'a> {
+    pub fn new<'a>(m: Vec<Meta>, c: Vec<Chapter<'a>>, s: &'a str) -> Book<'a> {
         Book {
             metas: m,
             chapters: c,
-            source:s,
+            source: s,
         }
     }
 
