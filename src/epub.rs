@@ -21,9 +21,18 @@ pub fn gen_epub<'a>(book: meta::Book<'a>) -> Result<()> {
     }
     let mut index = 1;
     for c in book.get_chapter().iter() {
+        let start=c.get_start();
+        let mut next_c:usize;
+        if index>=book.get_chapter().len() {
+             next_c=book.get_source().len();
+        }
+        else {
+            next_c=book.get_chapter()[index].get_start();
+        }
+        let content=book.get_source()[start..next_c].as_bytes();
         let econtent = EpubContent::new(
             format!("chapter{:?}.html", index),
-            c.get_content().as_bytes(),
+            content,
         )
         .title(c.get_name())
         .reftype(ReferenceType::Cover);
