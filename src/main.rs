@@ -5,7 +5,6 @@ use std::fs::File;
 use std::io::prelude::*;
 use regex::Regex; 
 
-
 mod meta;
 mod epub;
 fn split_keep<'a>(r: &Regex, text: &'a str) -> Vec<meta::Chapter<'a>> {
@@ -30,11 +29,8 @@ fn main() {
     if let Ok(file) = open_text(".\\1.txt") {
         let seperator = Regex::new(r"([a-z]+)").expect("Invalid regex");
     let splits = split_keep(&seperator, &file);
-    for split in splits {
-        println!("\"{}\"", split);
-    }
-    let chapter =meta::Chapter::new("f", "f");
-       epub::gen_epub(chapter);
+    let book= meta::Book::new(Vec::new(), splits);
+       epub::gen_epub(book);
     }
     
 }
