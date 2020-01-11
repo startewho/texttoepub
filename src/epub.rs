@@ -28,9 +28,10 @@ pub fn gen_epub<'a>(book: meta::Book<'a>) -> Result<()> {
         } else {
             next_c = book.get_chapter()[index].get_start();
         }
-        let content = book.get_source()[start..next_c].as_bytes();
-        let econtent =
-            EpubContent::new(format!("chapter{:?}.html", index), content).title(c.get_name());
+
+        let cpater = gen_chapter(&(book.get_source()[start..next_c]));
+        let econtent = EpubContent::new(format!("chapter{:?}.html", index), cpater.as_bytes())
+            .title(c.get_name());
         buider.add_content(econtent)?;
         index += 1;
     }
@@ -40,4 +41,15 @@ pub fn gen_epub<'a>(book: meta::Book<'a>) -> Result<()> {
     // Generate a toc inside of the document, that will be part of the linear structure.
     buider.inline_toc().generate(&mut buffer)?;
     Ok(())
+}
+
+pub fn gen_chapter<'a>(raw: &str) -> String {
+    let mut pstr = String::new();
+    for l in raw.lines() {
+        pstr.push_str("<p>");
+        pstr.push_str(l);
+        pstr.push_str("</p>");
+        pstr.push_str("\r\n");
+    }
+    pstr
 }
