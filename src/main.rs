@@ -11,12 +11,20 @@ mod epub;
 mod meta;
 fn split_chapters<'a>(r: &Regex, text: &'a str) -> Vec<meta::Chapter<'a>> {
     let mut result = Vec::new();
-
+    let mut index = 1;
     for c in r.captures_iter(text) {
         let title = c.get(0).unwrap();
-        let chapter =
-            meta::Chapter::new(title.as_str(), title.as_str(), title.start(), title.end());
+
+        let chapter = meta::Chapter::new(
+            title.as_str(),
+            title.as_str(),
+            title.start(),
+            title.end(),
+            index,
+        );
+
         result.push(chapter);
+        index = index + 1;
     }
     result
 }

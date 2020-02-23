@@ -6,6 +6,7 @@ pub struct Chapter<'a> {
     content: &'a str,
     start: usize,
     end: usize,
+    index: usize,
 }
 
 pub struct Meta {
@@ -21,12 +22,13 @@ pub struct Book<'a> {
 }
 
 impl Chapter<'_> {
-    pub fn new<'a>(n: &'a str, c: &'a str, s: usize, e: usize) -> Chapter<'a> {
+    pub fn new<'a>(n: &'a str, c: &'a str, s: usize, e: usize, i: usize) -> Chapter<'a> {
         Chapter {
             name: n,
             content: c,
             start: s,
             end: e,
+            index: i,
         }
     }
     pub fn get_name<'a>(&'a self) -> &'a str {
@@ -40,6 +42,9 @@ impl Chapter<'_> {
     }
     pub fn get_end<'a>(&'a self) -> usize {
         self.end
+    }
+    pub fn get_index<'a>(&'a self) -> usize {
+        self.index
     }
 }
 
