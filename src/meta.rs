@@ -19,6 +19,7 @@ pub struct Book<'a> {
     chapters: Vec<Chapter<'a>>,
     metas: Vec<Meta>,
     source: &'a str,
+    target:&'a str,
 }
 
 impl Chapter<'_> {
@@ -49,11 +50,12 @@ impl Chapter<'_> {
 }
 
 impl Book<'_> {
-    pub fn new<'a>(m: Vec<Meta>, c: Vec<Chapter<'a>>, s: &'a str) -> Book<'a> {
+    pub fn new<'a>(m: Vec<Meta>, c: Vec<Chapter<'a>>, s: &'a str,t:&'a str) -> Book<'a> {
         Book {
             metas: m,
             chapters: c,
             source: s,
+            target:t
         }
     }
 
@@ -66,6 +68,10 @@ impl Book<'_> {
 
     pub fn get_source<'a>(&'a self) -> &'a str {
         self.source
+    }
+
+    pub fn get_target<'a>(&'a self) -> &'a str {
+        self.target
     }
 }
 

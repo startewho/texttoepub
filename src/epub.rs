@@ -13,23 +13,23 @@ pub fn gen_epub<'a>(book: meta::Book<'a>) -> Result<()> {
 
     let dummy_css = "body { background-color: pink }";
 
-    let mut buffer = File::create("foo.epub").unwrap();
+    let mut buffer = File::create(book.get_target()).unwrap();
     // Create a new EpubBuilder using the zip library
     let mut buider = EpubBuilder::new(ZipLibrary::new().unwrap())?;
     for m in book.get_metas().iter() {
         buider.metadata(&m.key, &m.value)?;
     }
-    let len= book.get_chapter().len();
-    if len>0 {
-        let fir_c=&book.get_chapter()[0];
-        let fir_start=fir_c.get_start();
-        if fir_start>0 {
+    let len = book.get_chapter().len();
+    if len > 0 {
+        let fir_c = &book.get_chapter()[0];
+        let fir_start = fir_c.get_start();
+        if fir_start > 0 {
             let capter = gen_chapter(&(book.get_source()[0..fir_start]));
-            let econtent = EpubContent::new(format!("chapter{:?}.html", 0), capter.as_bytes())
-                .title("前言");
+            let econtent =
+                EpubContent::new(format!("chapter{:?}.html", 0), capter.as_bytes()).title("前言");
             buider.add_content(econtent)?;
         }
-    }   
+    }
 
     let mut index = 1;
     for c in book.get_chapter().iter() {
@@ -48,7 +48,7 @@ pub fn gen_epub<'a>(book: meta::Book<'a>) -> Result<()> {
     }
     // Set the stylesheet (create a "stylesheet.css" file in EPUB that is used by some generated files)
     buider.stylesheet(dummy_css.as_bytes())?;
-    
+
     // Generate a toc inside of the document, that will be part of the linear structure.
     buider.inline_toc().generate(&mut buffer)?;
     Ok(())

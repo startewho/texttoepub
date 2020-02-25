@@ -7,6 +7,8 @@ use std::io::prelude::*;
 use std::io::SeekFrom;
 use std::path::Path;
 
+use structopt::StructOpt;
+
 mod epub;
 mod meta;
 fn split_chapters<'a>(r: &Regex, text: &'a str) -> Vec<meta::Chapter<'a>> {
@@ -53,15 +55,41 @@ fn clear_text(source: &str) -> String {
     text
 }
 
+
+
+#[derive(Debug, StructOpt)]
+#[structopt(name = "texttoepub", about = "a tool that convert text to epub.")]
+struct Opt {
+   
+    /// Input file
+    #[structopt(short = "i", long = "input",parse(from_str))]
+    input: String,
+    #[structopt(short = "o", long = "out",default_value="out.epub",parse(from_str))]
+    out: String,
+    #[structopt(short = "c", long = "chapter", default_value=r"(?m)(^\s*[第卷][0123456789一二三四五六七八九十零〇百千两]*[章回部节集卷].*)",parse(from_str))]
+    chapter: String,
+}
+
+
 fn main() {
-    if let Ok(source) = open_text(".\\2.txt") {
+
+    let opt = Opt::from_args();
+
+   if Path::new(&opt.input).exists()
+   {
+    if let Ok(source) = open_text(&opt.input)
+    {
         let text = clear_text(&source);
-        let seperator = Regex::new(
-            r"(?m)(^\s*[第卷][0123456789一二三四五六七八九十零〇百千两]*[章回部节集卷].*)",
-        )
+        let seperator = Regex::new(&opt.chapter)
         .expect("Invalid regex");
         let splits = split_chapters(&seperator, &text);
-        let book = meta::Book::new(Vec::new(), splits, &text);
+        let book = meta::Book::new(Vec::new(), splits, &text,&opt.out);
         epub::gen_epub(book).unwrap();
     }
+
+   } else {
+    println!("{} does not exist", &opt.input);
+   }
+   
+
 }
